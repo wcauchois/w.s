@@ -2,6 +2,7 @@
   "name": "w.s",
   "version": "0.0.1",
   "dependencies": {
-    "mongodb": "*"
+    "mongodb": "*",
+    "mu2": "*"
   }
 }
