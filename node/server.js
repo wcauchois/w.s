@@ -3,18 +3,17 @@ var http = require('http'),
     util = require('util'),
     mongo = require('mongodb');
 
-var PORT = 8080;
-var DB = 'w_s';
-var MONGO_HOST = '127.0.0.1';
-var MONGO_PORT = 27017;
-var DEBUG = true;
+if (process.env.MODE == undefined)
+  process.env.MODE = 'dev';
+var config = require('./config.' + process.env.MODE + '.js');
 
 mustache.root = __dirname + '/templates';
 
 function fail(response, debug) {
   response.writeHead(500, {'Content-Type': 'text/plain'});
-  response.write('Internal server error\n\n');
-  response.write(util.inspect(debug));
+  response.write('Internal server error');
+  if (config.DEBUG)
+    response.write('\n\n' + util.inspect(debug));
 }
 
 function index(client, request, response) {
@@ -36,11 +35,22 @@ function index(client, request, response) {
   });
 }
 
+function post(client, request, response) {
+  client.collection('posts', function(err, collection) {
+    if (err != null)
+      fail(response, err);
+    else {
+      // something something something
+    }
+  });
+}
+
 var routes = [
   {pattern: /\/$/, method: 'GET', handler: index}
 ];
 
-var db = new mongo.Db(DB, new mongo.Server(MONGO_HOST, MONGO_PORT, {}), {w: 1});
+var db = new mongo.Db(config.DB,
+  new mongo.Server(config.MONGO_HOST, config.MONGO_PORT, {}), {w: 1});
 db.open(function(err, client) {
   if (err != null) {
     console.error(err);
@@ -59,11 +69,11 @@ db.open(function(err, client) {
         response.writeHead(404, {'Content-Type': 'text/plain'});
         response.end('Not found\n');
       }
-      if (DEBUG) mustache.clearCache();
+      if (config.DEBUG) mustache.clearCache();
     });
 
-    server.listen(PORT);
-    console.log('Server listening on port ' + PORT);
+    server.listen(config.PORT);
+    console.log('Server listening on port ' + config.PORT);
   }
 });
 
