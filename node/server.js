@@ -35,27 +35,6 @@ function index(client, request, response) {
     }
   });
 }
-/*
-  response.writeHead(200, {'Content-Type': 'text/html'});
-  var values = {
-    posts: [
-      {
-        body: 'Hello, world!',
-        author: 'firefax',
-        url: 'http://google.com',
-        timestamp: 1359081154
-      },
-      {
-        body: 'Goodbye, world!',
-        author: 'firefax',
-        url: 'http://images.google.com',
-        timestamp: 1359081000
-      }
-    ]
-  };
-  var stream = mustache.compileAndRender('index.mustache', values);
-  util.pump(stream, response);
-}*/
 
 var routes = [
   {pattern: /\/$/, method: 'GET', handler: index}
