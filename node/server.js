@@ -1,7 +1,10 @@
 var http = require('http'),
     mustache = require('mu2'),
     util = require('util'),
-    mongo = require('mongodb');
+    mongo = require('mongodb'),
+    querystring = require('querystring'),
+    events = require('events'),
+    fs = require('fs');
 
 if (process.env.MODE == undefined)
   process.env.MODE = 'dev';
@@ -16,52 +19,99 @@ function fail(response, debug) {
     response.write('\n\n' + util.inspect(debug));
 }
 
-function index(client, request, response) {
+function index(client, emitter, request, response) {
   client.collection('posts', function(err, collection) {
-    if (err != null)
+    if (err)
       fail(response, err);
     else {
-      collection.find().toArray(function(err, docs) {
-        if (err != null)
+      collection.find().sort({timestamp: -1}).limit(20).toArray(function(err, docs) {
+        if (err)
           fail(response, err);
         else {
-          var values = {posts: docs};
-          var stream = mustache.compileAndRender('index.mustache', values);
-          response.writeHead(200, {'Content-Type': 'text/html'});
-          util.pump(stream, response);
+          fs.readFile('./templates/post.mustache', function(err, postTemplate) {
+            if (err)
+              fail(response, err);
+            else {
+              var values = {
+                posts: docs,
+                config: config,
+                postTemplate: postTemplate
+              };
+              var stream = mustache.compileAndRender('index.mustache', values);
+              response.writeHead(200, {'Content-Type': 'text/html'});
+              util.pump(stream, response);
+            }
+          });
         }
       });
     }
   });
 }
 
-function post(client, request, response) {
-  client.collection('posts', function(err, collection) {
-    if (err != null)
-      fail(response, err);
-    else {
-      // something something something
-    }
+function validatePost(doc) {
+  return doc.body != undefined &&
+    doc.body.length > 0 &&
+    doc.author != undefined &&
+    doc.url != undefined &&
+    doc.url.length > 0
+}
+
+function post(client, emitter, request, response) {
+  var rawData = '';
+  request.on('data', function(chunk) {
+    rawData += chunk;
+  });
+  request.on('end', function() {
+    console.log(rawData);
+    var data = querystring.parse(rawData);
+    client.collection('posts', function(err, collection) {
+      if (err)
+        fail(response, err);
+      else {
+        var doc = {
+          body: data.body,
+          author: data.author,
+          url: data.url,
+          timestamp: Math.round(new Date().getTime() / 1000)
+        }
+        if (!validatePost(doc)) {
+          response.writeHead(400, {'Content-Type': 'text/plain'});
+          response.end('Bad request');
+        } else {
+          collection.insert(doc, function(err, docs) {
+            if (err)
+              fail(response, err);
+            else {
+              emitter.emit('newPost', docs[0]);
+              response.writeHead(302, {'Location': '/'});
+              response.end(JSON.stringify(docs[0]));
+            }
+          });
+        }
+      }
+    });
   });
 }
 
 var routes = [
-  {pattern: /\/$/, method: 'GET', handler: index}
+  {pattern: /\/$/, method: 'GET', handler: index},
+  {pattern: /\/post$/, method: 'POST', handler: post}
 ];
 
 var db = new mongo.Db(config.DB,
   new mongo.Server(config.MONGO_HOST, config.MONGO_PORT, {}), {w: 1});
 db.open(function(err, client) {
-  if (err != null) {
+  if (err) {
     console.error(err);
     process.exit(1);
   } else {
+    var emitter = new events.EventEmitter();
     var server = http.createServer(function (request, response) {
       var handled = false;
       routes.forEach(function(entry) {
         if (request.url.match(entry.pattern) != null &&
             request.method == entry.method) {
-          entry.handler(client, request, response);
+          entry.handler(client, emitter, request, response);
           handled = true;
         }
       });
@@ -71,9 +121,19 @@ db.open(function(err, client) {
       }
       if (config.DEBUG) mustache.clearCache();
     });
-
     server.listen(config.PORT);
-    console.log('Server listening on port ' + config.PORT);
+
+    var io = require('socket.io').listen(config.SOCKET_IO_PORT);
+    io.sockets.on('connection', function(socket) {
+      var newPostListener = function(post) {
+        socket.emit('newPost', {post: post});
+      };
+      emitter.on('newPost', newPostListener);
+      socket.on('disconnect', function() {
+        emitter.removeListener('newPost', newPostListener);
+      });
+    });
+    console.log('HTTP server listening on port ' + config.PORT);
   }
 });
 

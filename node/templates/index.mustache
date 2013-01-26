@@ -1,9 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script type="text/javascript" src="http://w_s_assets.s3.amazonaws.com/jquery.min.js"></script>
-    <script type="text/javascript" src="http://w_s_assets.s3.amazonaws.com/jquery.timeago.js"></script>
-    <link href='http://fonts.googleapis.com/css?family=Lato:400,100italic' rel='stylesheet' type='text/css'>
+    <script type="text/javascript"
+        src="http://w_s_assets.s3.amazonaws.com/jquery.min.js"></script>
+    <script type="text/javascript"
+        src="http://w_s_assets.s3.amazonaws.com/jquery.timeago.js"></script>
+    <script type="text/javascript"
+        src="http://w_s_assets.s3.amazonaws.com/socket.io.min.js"></script>
+    <script type="text/javascript"
+        src="http://w_s_assets.s3.amazonaws.com/jquery.mustache.js"></script>
+    <link
+        href='http://fonts.googleapis.com/css?family=Lato:400,100italic'
+         rel='stylesheet' type='text/css' />
+    <title>...it is a mystery...</title>
+    <script type="application/mustache" id="postTemplate">
+      {{{postTemplate}}}
+    </script>
     <style type="text/css">
       body {
         font-family: sans-serif;
@@ -48,6 +60,26 @@
       .post .url a:hover {
         color: #8D4D8D;
       }
+      #compose {
+        width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      #compose input[name='url'] {
+        width: 415px;
+      }
+      #compose input[name='author'] {
+        width: 150px;
+      }
+      #compose .field {
+        margin-bottom: 5px;
+      }
+      #compose input[type='submit'] {
+        float: right;
+        position: relative;
+        top: -29px;
+        font-weight: bold;
+      }
     </style>
     <script type="text/javascript">
       function refreshTimestamps() {
@@ -58,8 +90,19 @@
         });
       }
       $(document).ready(function() {
+        var postTemplate = $('#postTemplate').text();
         refreshTimestamps();
         window.setInterval(refreshTimestamps, 500);
+
+        var socket = io.connect(
+          'http://{{config.SOCKET_IO_HOST}}:{{config.SOCKET_IO_PORT}}');
+        socket.on('newPost', function(data) {
+          var div = $('<div class="post" id="' + data.post._id + '" />');
+          div.html($.mustache(postTemplate, data.post));
+          div.hide();
+          $('#posts').prepend(div);
+          div.fadeIn(1000);
+        });
       });
     </script>
   </head>
@@ -68,9 +111,20 @@
     <div id="main">
       <h1>Whisperers' Society</h1>
       <div id="content">
+        <div id="compose">
+          <form method="POST" action="/post">
+            <textarea class="field" name="body" placeholder="Share a secret"
+                rows="4" cols="50"></textarea><br />
+            <input class="field" name="url" placeholder="Address on the web" /><br />
+            <input class="field" name="author" placeholder="Your name (optional)" /><br />
+            <input type="submit" value="Post" />
+          </form>
+        </div>
         <div id="posts">
           {{#posts}}
-            {{> post.mustache}}
+            <div class="post" id="{{_id}}">
+              {{> post.mustache}}
+            </div>
           {{/posts}}
         </div>
       </div>
