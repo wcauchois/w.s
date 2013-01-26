@@ -2,8 +2,13 @@
   <div class="body">
     {{body}}
   </div>
-  <div class="footer">
+  <div class="info">
     <span class="author">{{author}}</span>&nbsp;
-    <span class="timestamp">{{timestamp}}</span>
+    <span class="timestamp" data-timestamp="{{timestamp}}">
+      at some point
+    </span>
+  </div>
+  <div class="url">
+    <a href="{{url}}" target="_blank">{{url}}</a>
   </div>
 </div>

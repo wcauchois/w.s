@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "mongodb": "*",
-    "mu2": "*"
+    "mu2": "*",
+    "socket.io": "*"
   }
 }

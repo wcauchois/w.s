@@ -1,13 +1,79 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script type="text/javascript" src="http://w_s_assets.s3.amazonaws.com/jquery.min.js"></script>
+    <script type="text/javascript" src="http://w_s_assets.s3.amazonaws.com/jquery.timeago.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,100italic' rel='stylesheet' type='text/css'>
     <style type="text/css">
+      body {
+        font-family: sans-serif;
+      }
+      #main {
+        background-color: rgba(0, 0, 0, 0.2);
+        width: 500px;
+        min-height: 200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      h1 {
+        font-family: 'Lato', sans-serif;
+        font-style: italic;
+        color: rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .post {
+        padding: 5px;
+        margin: 5px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      .post .body {
+        margin-bottom: 4px;
+      }
+      .post .author {
+        font-weight: bold;
+      }
+      .post .timestamp {
+        font-style: italic;
+      }
+      .post .url {
+        text-align: right;
+      }
+      .post .url a {
+        text-decoration: none;
+        color: #5C005C;
+      }
+      .post .url a:hover {
+        color: #8D4D8D;
+      }
     </style>
+    <script type="text/javascript">
+      function refreshTimestamps() {
+        $('.post .timestamp').each(function(i, elem) {
+          var $elem = $(elem),
+              date = new Date(parseInt($elem.data('timestamp')) * 1000);
+          $elem.text($.timeago(date));
+        });
+      }
+      $(document).ready(function() {
+        refreshTimestamps();
+        window.setInterval(refreshTimestamps, 500);
+      });
+    </script>
   </head>
   
   <body>
-    {{#posts}}
-      {{> post.mustache}}
-    {{/posts}}
+    <div id="main">
+      <h1>Whisperers' Society</h1>
+      <div id="content">
+        <div id="posts">
+          {{#posts}}
+            {{> post.mustache}}
+          {{/posts}}
+        </div>
+      </div>
+    </div>
   </body>
 </html>
