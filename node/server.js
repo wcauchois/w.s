@@ -4,7 +4,8 @@ var http = require('http'),
     mongo = require('mongodb'),
     querystring = require('querystring'),
     events = require('events'),
-    fs = require('fs');
+    fs = require('fs'),
+    url = require('url');
 
 if (process.env.MODE == undefined)
   process.env.MODE = 'dev';
@@ -93,9 +94,32 @@ function post(client, emitter, request, response) {
   });
 }
 
+function posts(client, emitter, request, response) {
+  client.collection('posts', function(err, collection) {
+    if (err)
+      fail(response, err);
+    else {
+      var data = querystring.parse(url.parse(request.url).search.substring(1));
+      var where = data['for'] == undefined ? {} : {url: data['for']};
+      var query = collection.find(where).sort({timestamp: -1});
+      var limit = parseInt(data.limit);
+      query = query.limit(limit == NaN ? 20 : limit);
+      query.toArray(function(err, docs) {
+        if (err)
+          fail(response, err);
+        else {
+          response.writeHead(200, {'Content-Type': 'application/json'});
+          response.end(JSON.stringify(docs));
+        }
+      });
+    }
+  });
+}
+
 var routes = [
   {pattern: /\/$/, method: 'GET', handler: index},
-  {pattern: /\/post$/, method: 'POST', handler: post}
+  {pattern: /\/post$/, method: 'POST', handler: post},
+  {pattern: /\/posts$/, method: 'GET', handler: posts}
 ];
 
 var db = new mongo.Db(config.DB,
@@ -109,7 +133,8 @@ db.open(function(err, client) {
     var server = http.createServer(function (request, response) {
       var handled = false;
       routes.forEach(function(entry) {
-        if (request.url.match(entry.pattern) != null &&
+        var pathname = url.parse(request.url).pathname;
+        if (pathname.match(entry.pattern) != null &&
             request.method == entry.method) {
           entry.handler(client, emitter, request, response);
           handled = true;
