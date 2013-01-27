@@ -1,9 +1,13 @@
-exports.DB = 'w_s';
-exports.MONGO_HOST = '127.0.0.1';
-exports.MONGO_PORT = 27017;
+var config = {
+  DB: 'w_s',
+  MONGO_HOST: '127.0.0.1',
+  MONGO_PORT: 27017,
+  HOST: 'w.s',
+  PORT: 8080,
+  SOCKET_IO_HOST: 'w.s',
+  SOCKET_IO_PORT: 8079,
+  DEBUG: false
+};
+if (typeof exports != undefined)
+  exports = config;
 
-exports.HOST = 'w.s';
-exports.PORT = 8013;
-exports.SOCKET_IO_HOST = exports.HOST;
-exports.SOCKET_IO_PORT = 8012;
-exports.DEBUG = false;

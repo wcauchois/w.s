@@ -2,11 +2,20 @@
   "manifest_version": 2,
 
   "name": "w.s",
-  "description": "The whisperer's society",
+  "description": "The Whisperers' Society",
   "version": "1.0",
+  "options_page": "options.html",
 
   "permissions": [
-    "https://secure.flickr.com/"
+    "tabs",
+    "http://w.s",
+    "http://local.w.s:8080"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["jquery.min.js", "contentScript.js"]
+    }
   ],
   "browser_action": {
     "default_icon": "icon.png",

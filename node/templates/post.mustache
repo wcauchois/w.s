@@ -2,7 +2,9 @@
   {{body}}
 </div>
 <div class="info">
-  <span class="author">{{author}}</span>&nbsp;
+  {{#author}}
+    <span class="author">{{author}}</span>&nbsp;
+  {{/author}}
   <span class="timestamp" data-timestamp="{{timestamp}}">
     at some point
   </span>
