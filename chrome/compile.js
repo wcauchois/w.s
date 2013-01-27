@@ -4,8 +4,8 @@ var mustache = require('../node/node_modules/mu2'),
 
 function compileManifest() {
   var stream = mustache.compileAndRender('manifest.mustache', {
-    dev_config: require('../config.dev.js'),
-    prod_config: require('../config.prod.js')
+    dev_config: require('./config.dev.js'),
+    prod_config: require('./config.prod.js')
   });
   var outStream = fs.createWriteStream('manifest.json');
   util.pump(stream, outStream);
