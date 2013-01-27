@@ -3,6 +3,11 @@ import os
 from fabric.api import run, local, settings, abort, env
 from fabric.operations import put
 
+def config():
+  for mode in ('dev', 'prod'):
+    for target_dir in ('./chrome/', './node/'):
+      local('cp config.%s.js %s' % (mode, target_dir))
+
 def linode_env():
   env.host_string = 'linode'
   env.source_dir = '/home/wcauchois/Code/w.s/node'

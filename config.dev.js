@@ -1,5 +1,4 @@
-// REMEMBER to `make' after changing this file
-// So it gets copied to chrome/ and node/
+// Remember to run `fab config' after modifying this file
 var config = {
   dev: {
     DB: 'w_s',
