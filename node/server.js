@@ -70,7 +70,7 @@ function post(client, emitter, request, response) {
       else {
         var doc = {
           body: data.body,
-          author: data.author,
+          author: data.author, // TODO: if author is null, set to Anonymous
           url: data.url,
           timestamp: Math.round(new Date().getTime() / 1000)
         }
