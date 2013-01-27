@@ -24,14 +24,14 @@ def copy_common_assets():
   local('cp common/post.mustache node/templates/')
   local('cp common/post.mustache chrome/')
 
-def compile_manifest():
+def chrome_compile():
   with lcd('chrome'):
-    local('node compileManifest.js')
+    local('node compile.js')
 
 def gen():
   copy_configs()
   copy_common_assets()
-  compile_manifest()
+  chrome_compile()
 
 def setup_linode():
   env.host_string = 'linode'
