@@ -1,16 +1,14 @@
 // Remember to run `fab config' after modifying this file
-var config = {
-  prod: {
-    DB: 'w_s',
-    MONGO_HOST: '127.0.0.1',
-    MONGO_PORT: 27017,
-    HOST: 'w.s',
-    PORT: 8080,
-    SOCKET_IO_HOST: 'w.s',
-    SOCKET_IO_PORT: 8079,
-    DEBUG: false
-  }
+var prod_config = {
+  DB: 'w_s',
+  MONGO_HOST: '127.0.0.1',
+  MONGO_PORT: 27017,
+  HOST: 'w.s',
+  PORT: 8080,
+  SOCKET_IO_HOST: 'w.s',
+  SOCKET_IO_PORT: 8079,
+  DEBUG: false
 };
 if (typeof exports != undefined)
-  exports = config.prod;
+  exports = prod_config;
 
