@@ -8,3 +8,4 @@ node/config.*.js
 chrome/manifest.json
 node/templates/post.mustache
 chrome/post.mustache
+chrome/popup.html
