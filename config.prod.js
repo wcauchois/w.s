@@ -5,10 +5,11 @@ var prod_config = {
   MONGO_PORT: 27017,
   HOST: 'w.s',
   PORT: 8080,
+  VISIBLE_PORT: 80,
   SOCKET_IO_HOST: 'w.s',
   SOCKET_IO_PORT: 8079,
   DEBUG: false
 };
 if (typeof exports != undefined)
-  exports = prod_config;
+  module.exports = prod_config;
 

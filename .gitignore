@@ -2,5 +2,7 @@ node/node_modules
 npm-debug.log
 *.swp
 *.pyc
+# These files are generated using `fab gen'
 chrome/config.*.js
 node/config.*.js
+chrome/manifest.json

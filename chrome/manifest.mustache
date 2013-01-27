@@ -8,8 +8,8 @@
 
   "permissions": [
     "tabs",
-    "http://w.s/",
-    "http://local.w.s:8080/"
+    "http://{{prod_config.HOST}}:{{prod_config.VISIBLE_PORT}}/",
+    "http://{{dev_config.HOST}}:{{dev_config.VISIBLE_PORT}}/"
   ],
   "content_scripts": [
     {

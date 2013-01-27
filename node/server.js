@@ -13,11 +13,12 @@ var config = require('./config.' + process.env.MODE + '.js');
 
 mustache.root = __dirname + '/templates';
 
-function fail(response, debug) {
+function fail(response, err) {
   response.writeHead(500, {'Content-Type': 'text/plain'});
   response.write('Internal server error');
+  console.error(err);
   if (config.DEBUG)
-    response.write('\n\n' + util.inspect(debug));
+    response.write('\n\n' + err);
 }
 
 function index(client, emitter, request, response) {
