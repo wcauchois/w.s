@@ -16,12 +16,23 @@ function compilePopupHtml() {
     if (err) {
       console.error(err);
       process.exit(1);
+    } else {
+      fs.readFile('assetScripts.json', function(err, rawAssetScripts) {
+        if (err) {
+          console.error(err);
+          process.exit(1);
+        } else {
+          var assetScripts = JSON.parse(rawAssetScripts).map(
+            function(name) { return {name: name}; });
+          var stream = mustache.compileAndRender('popup.mustache', {
+            postTemplate: postTemplate,
+            assetScripts: assetScripts
+          });
+          var outStream = fs.createWriteStream('popup.html');
+          util.pump(stream, outStream);
+        }
+      });
     }
-    var stream = mustache.compileAndRender('popup.mustache', {
-      postTemplate: postTemplate
-    });
-    var outStream = fs.createWriteStream('popup.html');
-    util.pump(stream, outStream);
   });
 }
 

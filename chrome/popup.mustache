@@ -11,9 +11,11 @@
     <script type="application/mustache">
       {{{postTemplate}}}
     </script>
+    {{#assetScripts}}
+      <script type="text/javascript" src="{{name}}"></script>
+    {{/assetScripts}}
     <script src="config.dev.js"></script>
     <script src="config.prod.js"></script>
-    <script src="jquery.min.js"></script>
     <script src="popup.js"></script>
   </head>
   <body>

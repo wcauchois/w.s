@@ -1,7 +1,10 @@
 from __future__ import with_statement
-import os
+import os, json
 from fabric.api import run, local, settings, abort, env, cd, lcd
 from fabric.operations import put
+
+AWS_BUCKET = open('aws_bucket.txt', 'r').read().strip()
+AWS_ASSETS_ROOT = 'http://%s.s3.amazonaws.com/' % AWS_BUCKET
 
 def copy_configs():
   for target_dir in ('chrome/', 'node/'):
@@ -28,10 +31,17 @@ def chrome_compile():
   with lcd('chrome'):
     local('node compile.js')
 
+def download_asset_scripts():
+  with lcd('chrome'):
+    for script in json.load(open('chrome/assetScripts.json')):
+      local('rm -f %s' % script)
+      local('wget --quiet %s%s' % (AWS_ASSETS_ROOT, script))
+
 def gen():
   copy_configs()
   copy_common_assets()
   chrome_compile()
+  download_asset_scripts()
 
 def setup_linode():
   env.host_string = 'linode'

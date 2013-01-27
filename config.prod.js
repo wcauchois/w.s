@@ -1,4 +1,3 @@
-// Remember to run `fab gen' after modifying this file
 var prod_config = {
   DB: 'w_s',
   MONGO_HOST: '127.0.0.1',

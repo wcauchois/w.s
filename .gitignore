@@ -9,3 +9,6 @@ chrome/manifest.json
 node/templates/post.mustache
 chrome/post.mustache
 chrome/popup.html
+chrome/jquery.mustache.js
+chrome/jquery.min.js
+chrome/jquery.timeago.js
