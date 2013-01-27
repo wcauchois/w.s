@@ -6,3 +6,5 @@ npm-debug.log
 chrome/config.*.js
 node/config.*.js
 chrome/manifest.json
+node/templates/post.mustache
+chrome/post.mustache

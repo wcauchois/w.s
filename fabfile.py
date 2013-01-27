@@ -8,12 +8,29 @@ def copy_configs():
     for mode in ('dev', 'prod'):
       local('cp config.%s.js %s' % (mode, target_dir))
 
+def generated_assets():
+  for dir in ('chrome', 'node'):
+    for mode in ('dev', 'prod'):
+      yield '%s/config.%s.js' % (dir, mode)
+  yield 'node/templates/post.mustache'
+  yield 'chrome/post.mustache'
+  yield 'chrome/manifest.json'
+
+def clean():
+  for asset in generated_assets():
+    local('rm %s' % asset)
+
+def copy_common_assets():
+  local('cp common/post.mustache node/templates/')
+  local('cp common/post.mustache chrome/')
+
 def compile_manifest():
   with lcd('chrome'):
     local('node compileManifest.js')
 
 def gen():
   copy_configs()
+  copy_common_assets()
   compile_manifest()
 
 def setup_linode():
