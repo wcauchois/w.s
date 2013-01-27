@@ -1,0 +1,8 @@
+{
+  "HOST": "w.s",
+  "PORT": 8080,
+  "VISIBLE_PORT": 80,
+  "SOCKET_IO_HOST": "w.s",
+  "SOCKET_IO_PORT": 8079,
+  "DEBUG": false
+}
