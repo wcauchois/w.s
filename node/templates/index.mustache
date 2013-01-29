@@ -61,26 +61,6 @@
       .post .url a:hover {
         color: #8D4D8D;
       }
-      #compose {
-        width: 420px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      #compose input[name='url'] {
-        width: 415px;
-      }
-      #compose input[name='author'] {
-        width: 150px;
-      }
-      #compose .field {
-        margin-bottom: 5px;
-      }
-      #compose input[type='submit'] {
-        float: right;
-        position: relative;
-        top: -29px;
-        font-weight: bold;
-      }
     </style>
     <script type="text/javascript">
       function refreshTimestamps() {
@@ -112,15 +92,6 @@
     <div id="main">
       <h1>Whisperers' Society</h1>
       <div id="content">
-        <div id="compose">
-          <form method="POST" action="/post">
-            <textarea class="field" name="body" placeholder="Share a secret"
-                rows="4" cols="50"></textarea><br />
-            <input class="field" name="url" placeholder="Address on the web" /><br />
-            <input class="field" name="author" placeholder="Your name (optional)" /><br />
-            <input type="submit" value="Post" />
-          </form>
-        </div>
         <div id="posts">
           {{#posts}}
             <div class="post" id="{{_id}}">

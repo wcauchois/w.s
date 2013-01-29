@@ -7,6 +7,19 @@
         min-width: 357px;
         overflow-x: hidden;
       }
+      #compose textarea {
+        font-family: sans-serif;
+        font-size: 1em;
+      }
+      #compose .attribution {
+        font-style: italic;
+      }
+      #compose .author {
+        font-weight: bold;
+      }
+      #compose .status {
+        color: #949494;
+      }
     </style>
     <script type="application/mustache">
       {{{postTemplate}}}
@@ -20,6 +33,13 @@
   </head>
   <body>
     <div id="main">
+      <div id="compose">
+        <textarea placeholder="Press enter to submit" rows="3" cols="50"></textarea><br />
+        <span class="attribution">Posting as <span class="author">Anonymous</span></span>
+        <div class="status"></div>
+      </div>
+      <div id="posts">
+      </div>
     </div>
   </body>
 </html>
